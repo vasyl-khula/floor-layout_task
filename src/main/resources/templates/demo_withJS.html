@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Get the Value of Text Input Field in JavaScript</title>
+</head>
+<body>
+<input type="text" placeholder="Type X..." id="x">
+<input type="text" placeholder="Type Y..." id="y">
+<button type="button" id="btn">Get Value</button>
+<button type="button" onclick="getInputValue();">Submit</button>
+<br/>
+<br/>
+<canvas id="myCanvas" width="200" height="210">
+
+</canvas >
+
+<script>
+    var points=[];
+    var button=document.getElementById("btn");
+    button.addEventListener("click", getInputValue);
+
+    var canvas = document.getElementById("myCanvas");
+    var ctx = canvas.getContext("2d");
+    ctx.moveTo(10, 0);
+    ctx.lineTo(10, 200);
+    ctx.lineTo(200, 200);
+    ctx.lineTo(190,210);
+    ctx.lineTo(190,190);
+    ctx.lineTo(200,200);
+    ctx.stroke();
+
+    function getInputValue(){
+        // Selecting the input element and get its value
+        alert("===getInputValue starts====>");
+        var x_coordinate = document.getElementById("x").value;
+        var y_coordinate = document.getElementById("y").value;
+
+        var point={
+            x : x_coordinate,
+            y : y_coordinate
+        };
+
+        points.push(point);
+
+        alert(points.length+"length; "+"point="+point.x+" "+point.y);
+
+        if(points.length>1){
+            draw(points);
+        }
+
+        // Displaying the value
+        //alert(inputVal);
+    }
+    function draw(){
+        var len=points.length;
+        ctx.moveTo(points[len-2].x, points[len-2].y);
+        ctx.lineTo(points[len-1].x, points[len-1].y);
+        ctx.stroke();
+    }
+
+</script>
+</body>
+</html>

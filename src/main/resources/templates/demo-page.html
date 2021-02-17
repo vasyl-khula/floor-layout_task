@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="/resources/templates/main.js"></script>
+    <title>Demo</title>
+</head>
+
+<body>
+<input type="submit" class="btn btn-info" value="Register room" id="btn_send"/>
+
+<p><h2 id="text"></h2></p>
+
+    <!--<script>
+        const btn_send=document.getElementById("btn_send").addEventListener("click",sendRoomJson);
+
+        function sendRoomJson(){
+
+            const points = [{"x": 10, "y": 10}, {"x": 10, "y": 20}, {"x": 20, "y": 20}];
+            const room = {"room": points};
+
+            const room_json = JSON.stringify(room);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/demo");
+            xhr.setRequestHeader("Content-type", "application/json");
+            xhr.responseType="json";
+
+            xhr.onload=function (){
+                document.getElementById("text").innerHTML=JSON.stringify(xhr.response);
+                console.log()
+            }
+            xhr.send(room_json);
+        }
+
+    </script>-->
+</body>
+</html>

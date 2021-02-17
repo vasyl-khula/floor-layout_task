@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <title>room creation</title>
+</head>
+<body>
+    <div th:replace="header"></div>
+    <br/>
+
+    <div >
+        <h3 >   Response message: <scope id="responseMessage" > </scope></h3>
+
+    </div>
+
+<form class="form-horizontal" >
+    <div class="form-group">
+        <label class="col-sm-2 control-label">ROOM:</label>
+
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="x">Room coordinate-X:</label>
+        <div class="col-sm-8">
+            <input type="number" class="form-control" id="x"/>
+
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label" for="y" >Room coordinate-Y:</label>
+        <div class="col-sm-8">
+            <input type="number" class="form-control"  id="y"/>
+
+        </div>
+    </div>
+    <div class="position-absolute top-50 start-50 translate-middle">
+        <input type="button" class="btn btn-info" value="Add point" id="btn"/>
+        <input type="button" class="btn btn-info" value="Remove last point" id="btn_rem"/>
+        <input type="submit" class="btn btn-info" value="Register room" id="btn_send"/>
+        <input type="reset" class="btn btn" value="Clear"/>
+    </div>
+</form>
+    <br>
+    <br>
+<canvas id="myCanvas" width="500" height="300"  >
+</canvas>
+
+
+<script >
+    var points=[];
+
+    const button = document.getElementById("btn").addEventListener("click", getInputValue);
+    const btn_rem=document.getElementById("btn_rem").addEventListener("click", removeElem);
+    const btn_send=document.getElementById("btn_send").addEventListener("click",sendRoomJson);
+
+    const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "#FFFFF0";
+
+    coordinatesGrid();
+
+    function sendRoomJson(){
+        const room = {"room": points};
+        const room_json = JSON.stringify(room);
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/validateRoom");
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.responseType="json";
+
+
+        xhr.onload=function (){
+
+            document.getElementById("responseMessage").innerHTML=JSON.stringify(xhr.response);
+        }
+        xhr.send(room_json);
+    }
+
+
+    function removeElem(){
+        drawWalls("#FFFFF0");
+        points.pop();
+    }
+
+    function coordinatesGrid(){
+        const start_X = 20;
+        const start_Y = 10;
+        const end_X = canvas.width - 10;
+        const end_Y = canvas.height - 20;
+        ctx.moveTo(start_X, start_Y);
+        ctx.lineTo(start_X, end_Y);
+        ctx.lineTo(end_X, end_Y);
+        ctx.stroke();
+        drawArrow(start_X,start_Y,end_X,end_Y);
+    }
+
+    function drawArrow(start_X,start_Y,end_X,end_Y){
+        ctx.moveTo(start_X, start_Y);
+        ctx.lineTo(start_X-10, start_Y+15);
+        ctx.moveTo(start_X, start_Y);
+        ctx.lineTo(start_X+10, start_Y+15);
+
+        ctx.moveTo(end_X,end_Y);
+        ctx.lineTo(end_X-15,end_Y-10);
+        ctx.moveTo(end_X,end_Y);
+        ctx.lineTo(end_X-15,end_Y+10);
+        ctx.stroke();
+    }
+
+    function getInputValue(){
+        const x_coordinate = document.getElementById("x").value;
+        const y_coordinate = document.getElementById("y").value;
+
+        var point={
+            x : parseInt(x_coordinate),
+            y : parseInt(y_coordinate)
+        };
+
+        points.push(point);
+
+       // alert(points.length+"length; "+"point="+point.x+" "+point.y);
+
+        if(points.length>1){
+            drawWalls(points);
+        }
+
+    }
+    function drawWalls(colorLine){
+        const len = points.length;
+        const height = canvas.height;
+
+        var real_x_from=points[len-2].x;
+        var real_y_from=points[len-2].y;
+        var real_x_to=points[len-1].x;
+        var real_y_to=points[len-1].y;
+
+        var x_from=real_x_from + 20;
+        var y_from=height-real_y_from - 20;
+        var x_to=real_x_to +20;
+        var y_to=height-real_y_to - 20;
+
+        if(colorLine){
+            ctx.strokeStyle=colorLine;
+        }
+
+        ctx.beginPath();
+        ctx.moveTo(x_from, y_from);
+        ctx.lineTo(x_to, y_to);
+        ctx.stroke();
+        ctx.strokeStyle="#000000";
+    }
+
+</script>
+
+
+</body>
+</html>
